@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-lg">
 
     <div class="row">
         <div class="col-12">
@@ -15,13 +15,15 @@
                 <div>
                     <div class="card-body collapse" id="collapseExample">
                         <ul>
-                            @foreach ($events as $event)
-                            @php
-                            $date = new \Carbon\Carbon($event->reminder_date)
+                            @forelse ($events as $event)
+                                @php
+                                $date = new \Carbon\Carbon($event->reminder_date)
 
-                            @endphp
-                            <li>{{ $date->isoformat('dddd') }}, {{ $date->format('d') }} => {{ $event->title }}</li>
-                            @endforeach
+                                @endphp
+                                <li>{{ $date->isoformat('dddd') }}, {{ $date->format('d') }} => {{ $event->title }}</li>
+                            @empty 
+                                <div class="alert alert-primary">Tidak ada event pada bulan ini</div>
+                            @endforelse
                         </ul>
                     </div>
                 </div>
@@ -34,15 +36,17 @@
                 </div>
                 <div class="card-body">
                     <ul>
-                        @foreach ($events as $event)
-                        @if ($event->reminder_date == date('Y-m-d'))
-                        @php
-                        $date = new \Carbon\Carbon($event->reminder_date)
+                        @forelse ($events as $event)
+                            @if ($event->reminder_date == date('Y-m-d'))
+                                @php
+                                $date = new \Carbon\Carbon($event->reminder_date)
 
-                        @endphp
-                        <li>{{ $date->isoformat('dddd') }}, {{ $event->title }}</li>
-                        @endif
-                        @endforeach
+                                @endphp
+                                <li>{{ $date->isoformat('dddd') }}, {{ $event->title }}</li>
+                            @endif
+                        @empty
+                            <div class="alert alert-primary">Tidak ada event pada hari ini</div>
+                        @endforelse
                     </ul>
                 </div>
             </div>
@@ -59,13 +63,15 @@
                         $startWeek = $date->startOfWeek()->format('Y-m-d');
                         $endWeek = $date->endOfWeek()->format('Y-m-d');
                         @endphp
-                        @foreach ($events->whereBetween('reminder_date', [$startWeek, $endWeek]) as $event)
-                        @php
-                        $date = new \Carbon\Carbon($event->reminder_date)
+                        @forelse ($events->whereBetween('reminder_date', [$startWeek, $endWeek]) as $event)
+                            @php
+                            $date = new \Carbon\Carbon($event->reminder_date)
 
-                        @endphp
-                        <li>{{ $date->isoformat('dddd') }}, {{ $event->title }}</li>
-                        @endforeach
+                            @endphp
+                            <li>{{ $date->isoformat('dddd') }}, {{ $event->title }}</li>
+                        @empty 
+                            <div class="alert alert-primary">Tidak ada event pada minggu ini</div>
+                        @endforelse
                     </ul>
                 </div>
             </div>
